@@ -1,6 +1,5 @@
 require 'guard'
 require 'guard/guard'
-
 require 'sass'
 
 module Guard
