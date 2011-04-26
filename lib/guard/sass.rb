@@ -5,17 +5,18 @@ require 'sass'
 
 module Guard
   class Sass < Guard
-  
+
     VERSION = '0.0.5'
     attr_accessor :options
-    
+
     def initialize(watchers = [], options = {})
       @watchers, @options = watchers, options
       @options[:output] ||= 'css'
+      @options[:output_format] ||= 'css'
       @options[:load_paths] ||= Dir.glob('*')
     end
-        
-            
+
+
     # Builds the sass or scss. Determines engine to use by extension
     # of path given.
     #
@@ -29,7 +30,7 @@ module Guard
       engine = ::Sass::Engine.new(content, {:syntax => type, :load_paths => @options[:load_paths]})
       engine.render
     end
-    
+
     # Get the file path to output the css based on the file being 
     # built.
     #
@@ -40,14 +41,14 @@ module Guard
       folder = File.join File.dirname(file), '..', @options[:output]
       FileUtils.mkdir_p folder
       r = File.join folder, File.basename(file).split('.')[0]
-      r << '.css'
+      r << ".#{@options[:output_format]}"
     end
-    
-    
+
+
     # ================
     # = Guard method =
     # ================
-    
+
     # Build all files being watched
     def run_all
       patterns = @watchers.map {|w| w.pattern}
@@ -60,7 +61,7 @@ module Guard
       end
       run_on_change(r)
     end
-    
+
     # Build the files given
     def run_on_change(paths)
       paths.each do |file|
